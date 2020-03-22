@@ -1,0 +1,23 @@
+{
+  "name": "nat-tunnel",
+  "version": "1.0.0",
+  "description": "Relay TCP connections through a server instead of opening ports on your home router",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giuliojiang/nat-tunnel.git"
+  },
+  "author": "giuliojiang",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/giuliojiang/nat-tunnel/issues"
+  },
+  "homepage": "https://github.com/giuliojiang/nat-tunnel#readme",
+  "dependencies": {
+    "crypto-random-string": "^3.2.0",
+    "ws": "^7.2.3"
+  }
+}
