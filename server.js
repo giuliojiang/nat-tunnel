@@ -15,6 +15,13 @@ let secret = process.env.TUNNEL_SECRET;
     });
 
     let wsConnectionCount = 0;
+
+    let splitMessages = 0;
+
+    setInterval(() => {
+        console.info(`${splitMessages} messages/s`);
+        splitMessages = 0;
+    }, 1000);
     
     server.on('connection', ws => {
 
@@ -43,12 +50,27 @@ let secret = process.env.TUNNEL_SECRET;
             }
         }, 5000);
 
-        let tcpSockets = {};
+        let tcpConnections = {};
+        let removeTcpConnection = (id) => {
+            try {
+                delete tcpConnections[id];
+            } catch (err) {
+                console.warn(`Could not delete tcp connection ${id}`);
+            }
+        }
+        let doWithTcpConnection = (id, action) => {
+            try {
+                action(tcpConnections[id]);
+            } catch (err) {
+                console.warn(`Could not do with TCP connection ${id}`);
+                console.warn(err);
+            }
+        };
 
         tcpServer = net.createServer(tcpSocket => {
 
             let connectionId = util.randString();
-            tcpSockets[connectionId] = tcpSocket;
+            tcpConnections[connectionId] = tcpSocket;
 
             ws.send(JSON.stringify({
                 open: connectionId
@@ -65,7 +87,7 @@ let secret = process.env.TUNNEL_SECRET;
                 ws.send(JSON.stringify({
                     close: connectionId
                 }));
-                delete tcpSockets[connectionId];
+                removeTcpConnection(connectionId);
             });
 
         });
@@ -89,17 +111,19 @@ let secret = process.env.TUNNEL_SECRET;
 
             } else if (m.data != null) {
 
-                console.info('WebsocketServer: got data message');
+                splitMessages += 1;
                 let id = m.data;
                 let raw = m.raw;
                 let buffer = base64.fromBase64(raw);
-                tcpSockets[id].write(buffer);
+                doWithTcpConnection(id, tcpConn => {
+                    tcpConn.write(buffer);
+                });
 
             } else if (m.close != null) {
 
                 console.info('ws received close message');
                 let id = m.close;
-                tcpSockets[id].end();
+                removeTcpConnection(id);
 
             } else {
 
