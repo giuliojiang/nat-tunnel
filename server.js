@@ -33,6 +33,10 @@ let secret = process.env.TUNNEL_SECRET;
             tcpServer.close();
         });
 
+        ws.on('error', err => {
+            console.error(err);
+        });
+
         wsConnectionCount += 1;
         
         console.info('WebsocketServer: got new connection');
@@ -88,6 +92,10 @@ let secret = process.env.TUNNEL_SECRET;
                     close: connectionId
                 }));
                 removeTcpConnection(connectionId);
+            });
+
+            tcpSocket.on('error', err => {
+                console.error(err);
             });
 
         });

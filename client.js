@@ -61,6 +61,9 @@ let runClient = () => {
                     }));
                     removeTcpConnection(id);
                 });
+                tcpClient.on('error', err => {
+                    console.info(err);
+                });
 
             } else if (msg.close != null) {
 
