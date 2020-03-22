@@ -30,7 +30,11 @@ let secret = process.env.TUNNEL_SECRET;
         ws.on('close', (code, reason) => {
             console.info('WebsocketServer: connection closed');
             wsConnectionCount -= 1;
-            tcpServer.close();
+            try {
+                tcpServer.close();
+            } catch (err) {
+                console.warn('WARN: error when closing TCP socket');
+            }
         });
 
         ws.on('error', err => {
