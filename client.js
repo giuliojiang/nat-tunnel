@@ -90,7 +90,14 @@ let runClient = () => {
             console.error(err);
         });
 
+        let heartbeatHandle = setInterval(() => {
+            ws.send(JSON.stringify({
+                heartbeat: true
+            }));
+        }, 1000);
+
         ws.on('close', () => {
+            clearTimeout(heartbeatHandle);
             resolve();
         });
 

@@ -4,6 +4,13 @@ Client -> Server
 
 ```
 {
+    heartbeat: true
+}
+```
+
+
+```
+{
     auth: "password"
 }
 ```

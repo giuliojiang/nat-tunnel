@@ -133,6 +133,8 @@ let secret = process.env.TUNNEL_SECRET;
                 let id = m.close;
                 removeTcpConnection(id);
 
+            } else if (m.heartbeat != null) {
+
             } else {
 
                 console.info('WebsocketServer: unrecognized message type');
